@@ -135,21 +135,20 @@ function getHeartPoint(t,u){
   return new THREE.Vector3(x*.8, y*.8, z*.8);
 }
 
-// ❤️ emoji exact red = #FF2D55 → r:1.0 g:0.176 b:0.333
 function setHeartColor(col,i){
   const v=Math.random();
   if(v<0.5){
-    // Exact ❤️ emoji red
+    
     col[i*3]  =1.0;
     col[i*3+1]=0.14+Math.random()*.06;
     col[i*3+2]=0.28+Math.random()*.08;
   } else if(v<0.76){
-    // Slightly deeper
+   
     col[i*3]  =0.92+Math.random()*.08;
     col[i*3+1]=0.04+Math.random()*.06;
     col[i*3+2]=0.12+Math.random()*.08;
   } else if(v<0.92){
-    // Warmer highlight
+   
     col[i*3]  =1.0;
     col[i*3+1]=0.26+Math.random()*.12;
     col[i*3+2]=0.35+Math.random()*.1;
