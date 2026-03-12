@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" translate="no" class="notranslate">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google" content="notranslate">
+<title>Heart Text Morph</title>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{margin:0;overflow:hidden;background:#000;font-family:'Raleway',sans-serif}
+#canvas-container{width:100vw;height:100vh;position:relative}
+
+#canvas-container::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.65) 100%);
+  pointer-events:none;z-index:10;
+}
+
+.ui-container{
+  position:absolute;bottom:72px;left:50%;
+  transform:translateX(-50%);
+  z-index:100;text-align:center;
+  width:80%;max-width:460px;
+}
+input{
+  width:100%;padding:13px 28px;
+  background:rgba(255,255,255,.03);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:50px;
+  color:rgba(255,200,210,.85);
+  font-size:1rem;font-family:'Raleway',sans-serif;
+  font-weight:300;letter-spacing:.15em;
+  outline:none;backdrop-filter:blur(12px);
+  transition:all .4s ease;text-align:center;
+  caret-color:#ff2d55;
+}
+input::placeholder{color:rgba(255,80,100,.3);letter-spacing:.25em}
+input:focus{
+  background:rgba(255,20,50,.07);
+  border-color:rgba(255,60,90,.4);
+  box-shadow:0 0 28px rgba(255,20,50,.1);
+  color:rgba(255,220,225,.95);
+}
+
+.hint{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,calc(-50% + 145px));
+  z-index:50;pointer-events:none;
+  font-size:.55rem;letter-spacing:.35em;
+  color:rgba(255,80,100,.22);
+  font-weight:300;text-transform:uppercase;
+  animation:hintFade 3s ease-in-out infinite;
+  transition:opacity .6s;
+}
+@keyframes hintFade{0%,100%{opacity:.4}50%{opacity:.9}}
+
+/* Footer */
+.footer{
+  position:absolute;bottom:14px;left:50%;
+  transform:translateX(-50%);
+  z-index:100;text-align:center;white-space:nowrap;
+}
+.footer-credit{
+  font-size:.57rem;font-weight:300;
+  letter-spacing:.2em;color:rgba(255,255,255,.2);
+  margin-bottom:7px;
+}
+.footer-credit .hrt{
+  display:inline-block;
+  animation:pulse 1.5s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+.footer-links{
+  display:flex;align-items:center;
+  justify-content:center;gap:16px;
+}
+.footer-links a{
+  display:inline-flex;align-items:center;gap:5px;
+  color:rgba(255,255,255,.25);
+  text-decoration:none;
+  font-size:.6rem;letter-spacing:.1em;
+  transition:color .3s,transform .2s;
+  pointer-events:all;
+}
+.footer-links a:hover{color:rgba(255,45,85,.9);transform:translateY(-1px)}
+.footer-links a svg{width:14px;height:14px;fill:currentColor;flex-shrink:0}
+.footer-links .sep{color:rgba(255,255,255,.1);font-size:.5rem;pointer-events:none}
+</style>
+</head>
+<body>
+
+<div id="canvas-container"></div>
+
+<div class="hint" id="hint">Type to morph &nbsp;·&nbsp; Move cursor to scatter</div>
+
+<div class="ui-container">
+  <input type="text" id="text-input" maxlength="15" autocomplete="off" spellcheck="false" placeholder="Type anything...">
+</div>
+
+<div class="footer">
+  <div class="footer-credit">Made with <span class="hrt">❤️</span> by Ammar Bin Yasir</div>
+  <div class="footer-links">
+    <a href="https://x.com/AmmarBinYasir_1" target="_blank" rel="noopener" title="X (Twitter)">
+      <!-- X logo -->
+      <svg viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622Zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      X
+    </a>
+    <span class="sep">·</span>
+    <a href="https://github.com/AmmarBinYasir-1" target="_blank" rel="noopener" title="GitHub">
+      <!-- GitHub logo -->
+      <svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+      GitHub
+    </a>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+let scene, camera, renderer, particles;
+const particleCount = 50000;
+let targetPositions = [], velocities = [];
+let mouse = new THREE.Vector2(-9999,-9999);
+let isTextMode = false, time = 0;
+
+const textCanvas = document.createElement("canvas");
+const textCtx = textCanvas.getContext("2d");
+textCanvas.width = 900; textCanvas.height = 320;
+
+function getHeartPoint(t,u){
+  const x = 16*Math.pow(Math.sin(u),3)*Math.sin(t);
+  const y = (13*Math.cos(u)-5*Math.cos(2*u)-2*Math.cos(3*u)-Math.cos(4*u))*Math.sin(t);
+  const z = 12*Math.cos(t);
+  return new THREE.Vector3(x*.8, y*.8, z*.8);
+}
+
+// ❤️ emoji exact red = #FF2D55 → r:1.0 g:0.176 b:0.333
+function setHeartColor(col,i){
+  const v=Math.random();
+  if(v<0.5){
+    // Exact ❤️ emoji red
+    col[i*3]  =1.0;
+    col[i*3+1]=0.14+Math.random()*.06;
+    col[i*3+2]=0.28+Math.random()*.08;
+  } else if(v<0.76){
+    // Slightly deeper
+    col[i*3]  =0.92+Math.random()*.08;
+    col[i*3+1]=0.04+Math.random()*.06;
+    col[i*3+2]=0.12+Math.random()*.08;
+  } else if(v<0.92){
+    // Warmer highlight
+    col[i*3]  =1.0;
+    col[i*3+1]=0.26+Math.random()*.12;
+    col[i*3+2]=0.35+Math.random()*.1;
+  } else {
+    // White-hot sparkle
+    col[i*3]  =1.0;
+    col[i*3+1]=0.62+Math.random()*.22;
+    col[i*3+2]=0.65+Math.random()*.2;
+  }
+}
+
+function setTextColor(col,i){
+  const v=Math.random();
+  if(v<0.55){
+    col[i*3]=1.0; col[i*3+1]=0.13+Math.random()*.07; col[i*3+2]=0.26+Math.random()*.08;
+  } else if(v<0.82){
+    col[i*3]=1.0; col[i*3+1]=0.22+Math.random()*.14; col[i*3+2]=0.32+Math.random()*.1;
+  } else {
+    col[i*3]=1.0; col[i*3+1]=0.58+Math.random()*.28; col[i*3+2]=0.6+Math.random()*.22;
+  }
+}
+
+function sampleText(text){
+  if(!text||text.trim()==="") return null;
+  textCtx.clearRect(0,0,textCanvas.width,textCanvas.height);
+  textCtx.fillStyle="white";
+  const fs=text.length>10?76:112;
+  textCtx.font=`900 ${fs}px sans-serif`;
+  textCtx.textAlign="center"; textCtx.textBaseline="middle";
+  textCtx.fillText(text,textCanvas.width/2,textCanvas.height/2);
+  const data=textCtx.getImageData(0,0,textCanvas.width,textCanvas.height).data;
+  const pts=[];
+  for(let y=0;y<textCanvas.height;y++)
+    for(let x=0;x<textCanvas.width;x++)
+      if(data[(y*textCanvas.width+x)*4+3]>140)
+        pts.push({x:(x-textCanvas.width/2)*.095, y:-(y-textCanvas.height/2)*.095, z:(Math.random()-.5)*1.2});
+  return pts;
+}
+
+function updateTargets(text){
+  const tp=sampleText(text);
+  isTextMode=tp&&tp.length>0;
+  const col=particles.geometry.attributes.color.array;
+  particles.rotation.set(0,0,0);
+  for(let i=0;i<particleCount;i++){
+    if(isTextMode){
+      const p=tp[i%tp.length];
+      targetPositions[i]={x:p.x+(Math.random()-.5)*.08, y:p.y+(Math.random()-.5)*.08, z:p.z+(Math.random()-.5)*.08};
+      setTextColor(col,i);
+    } else {
+      const t=Math.acos(Math.random()*2-1), u=Math.random()*Math.PI*2;
+      const p=getHeartPoint(t,u);
+      targetPositions[i]={x:p.x+(Math.random()-.5)*.35, y:p.y+(Math.random()-.5)*.35, z:p.z+(Math.random()-.5)*.35};
+      setHeartColor(col,i);
+    }
+  }
+  particles.geometry.attributes.color.needsUpdate=true;
+  document.getElementById("hint").style.opacity=isTextMode?"0":"1";
+}
+
+function init(){
+  scene=new THREE.Scene();
+  camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,1000);
+  camera.position.z=38;
+  renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  document.getElementById("canvas-container").appendChild(renderer.domElement);
+
+  const geo=new THREE.BufferGeometry();
+  const pos=new Float32Array(particleCount*3);
+  const col=new Float32Array(particleCount*3);
+  for(let i=0;i<particleCount;i++){
+    pos[i*3]=(Math.random()-.5)*220;
+    pos[i*3+1]=(Math.random()-.5)*220;
+    pos[i*3+2]=(Math.random()-.5)*220;
+    velocities.push({x:0,y:0,z:0});
+    setHeartColor(col,i);
+  }
+  geo.setAttribute("position",new THREE.BufferAttribute(pos,3));
+  geo.setAttribute("color",new THREE.BufferAttribute(col,3));
+
+  const mat=new THREE.PointsMaterial({size:.13,vertexColors:true,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false});
+  particles=new THREE.Points(geo,mat);
+  scene.add(particles);
+  updateTargets("");
+
+  window.addEventListener("resize",()=>{
+    camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth,innerHeight);
+  });
+  window.addEventListener("mousemove",e=>{
+    mouse.x=(e.clientX/innerWidth)*2-1;
+    mouse.y=-(e.clientY/innerHeight)*2+1;
+  });
+  window.addEventListener("touchmove",e=>{
+    if(e.touches.length){
+      mouse.x=(e.touches[0].clientX/innerWidth)*2-1;
+      mouse.y=-(e.touches[0].clientY/innerHeight)*2+1;
+    }
+  },{passive:true});
+  document.getElementById("text-input").addEventListener("input",e=>updateTargets(e.target.value));
+  animate();
+}
+
+function animate(){
+  requestAnimationFrame(animate);
+  time+=.008;
+  const pos=particles.geometry.attributes.position;
+  const vv=new THREE.Vector3(mouse.x,mouse.y,.5).unproject(camera);
+  const dir=vv.sub(camera.position).normalize();
+  const dist=-camera.position.z/dir.z;
+  const m=camera.position.clone().add(dir.multiplyScalar(dist));
+
+  for(let i=0;i<particleCount;i++){
+    let px=pos.getX(i),py=pos.getY(i),pz=pos.getZ(i);
+    const t=targetPositions[i];
+    const dx=px-m.x,dy=py-m.y,dz=pz-m.z;
+    const d2=dx*dx+dy*dy+dz*dz,R=9;
+    if(d2<R*R){const d=Math.sqrt(d2),f=(R-d)/R;velocities[i].x+=(dx/d)*f*2;velocities[i].y+=(dy/d)*f*2;velocities[i].z+=(dz/d)*f*2;}
+    velocities[i].x+=(t.x-px)*.085;
+    velocities[i].y+=(t.y-py)*.085;
+    velocities[i].z+=(t.z-pz)*.085;
+    if(!isTextMode){velocities[i].x+=Math.sin(time+i*.001)*.006;velocities[i].y+=Math.cos(time+i*.0013)*.006;}
+    velocities[i].x*=.77;velocities[i].y*=.77;velocities[i].z*=.77;
+    pos.setXYZ(i,px+velocities[i].x,py+velocities[i].y,pz+velocities[i].z);
+  }
+  pos.needsUpdate=true;
+
+  if(!isTextMode){
+    particles.rotation.y=Math.sin(time*.18)*.12;
+    particles.rotation.x=Math.sin(time*.12)*.04;
+  } else {
+    particles.rotation.y*=.95;
+    particles.rotation.x*=.95;
+  }
+  renderer.render(scene,camera);
+}
+
+window.onload=init;
+</script>
+</body>
+</html>
